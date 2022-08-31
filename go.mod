@@ -1,4 +1,4 @@
-module dm
+module github.com/szmadd/dm
 
 go 1.13
 
