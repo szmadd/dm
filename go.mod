@@ -1,8 +1,8 @@
 module github.com/szmadd/dm
 
-go 1.13
+go 1.19
 
 require (
-	github.com/golang/snappy v0.0.1
-	golang.org/x/text v0.3.2
+	github.com/golang/snappy v0.0.4
+	golang.org/x/text v0.3.8
 )
