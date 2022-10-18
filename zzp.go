@@ -546,7 +546,7 @@ func (sv TypeData) arrayToBytes(data *DmArray, desc *TypeDescriptor) ([]byte, er
 func (sv TypeData) objToBytes(data interface{}, desc *TypeDescriptor) ([]byte, error) {
 
 	switch data.(type) {
-	case DmArray:
+	case *DmArray:
 		return sv.arrayToBytes(data.(*DmArray), desc)
 	default:
 		return sv.structToBytes(data.(*DmStruct), desc)
@@ -982,7 +982,7 @@ func (sv TypeData) bytesToRecord(val []byte, out *TypeData, desc *TypeDescriptor
 
 	strOut.m_attribs = make([]TypeData, desc.getStrctMemSize())
 	for i := 0; i < desc.getStrctMemSize(); i++ {
-		tmp, err := sv.bytesToTypeData(val, out, desc.m_arrObj)
+		tmp, err := sv.bytesToTypeData(val, out, &desc.m_fieldsObj[i])
 		if err != nil {
 			return nil, err
 		}
@@ -1352,7 +1352,7 @@ func (td *TypeData) toBytesFromDmArray(x *DmArray, typeDesc *TypeDescriptor) ([]
 	Dm_build_1.Dm_build_17(ret, 0, OBJ_BLOB_MAGIC)
 	Dm_build_1.Dm_build_17(ret, ULINT_SIZE, int32(len(desc)))
 	copy(ret[ULINT_SIZE+ULINT_SIZE:ULINT_SIZE+ULINT_SIZE+len(desc)], desc[:len(desc)])
-	copy(ret[ULINT_SIZE+ULINT_SIZE:ULINT_SIZE+ULINT_SIZE+len(desc)+len(data)], desc[:len(data)])
+	copy(ret[ULINT_SIZE+ULINT_SIZE+len(desc):ULINT_SIZE+ULINT_SIZE+len(desc)+len(data)], data[:len(data)])
 	return ret, nil
 }
 
@@ -1383,6 +1383,6 @@ func (td *TypeData) toBytesFromDmStruct(x *DmStruct, typeDesc *TypeDescriptor) (
 	Dm_build_1.Dm_build_17(ret, 0, OBJ_BLOB_MAGIC)
 	Dm_build_1.Dm_build_17(ret, ULINT_SIZE, int32(len(desc)))
 	copy(ret[ULINT_SIZE+ULINT_SIZE:ULINT_SIZE+ULINT_SIZE+len(desc)], desc[:len(desc)])
-	copy(ret[ULINT_SIZE+ULINT_SIZE:ULINT_SIZE+ULINT_SIZE+len(desc)+len(data)], desc[:len(data)])
+	copy(ret[ULINT_SIZE+ULINT_SIZE+len(desc):ULINT_SIZE+ULINT_SIZE+len(desc)+len(data)], data[:len(data)])
 	return ret, nil
 }

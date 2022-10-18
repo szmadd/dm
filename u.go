@@ -117,6 +117,19 @@ func (r *DmRows) ColumnTypePrecisionScale(index int) (precision, scale int64, ok
 	return r.filterChain.reset().DmRowsColumnTypePrecisionScale(r, index)
 }
 
+func (dest *DmRows) Scan(src interface{}) error {
+	switch src := src.(type) {
+	case nil:
+		*dest = *new(DmRows)
+		return nil
+	case *DmRows:
+		*dest = *src
+		return nil
+	default:
+		return UNSUPPORTED_SCAN
+	}
+}
+
 func (rows *DmRows) columns() []string {
 	return rows.CurrentRows.Columns()
 }
@@ -448,7 +461,7 @@ func (innerRows *innerRows) checkIndex(index int) *column {
 func (innerRows *innerRows) fetchData(startPos int64) bool {
 	execInfo, err := innerRows.dmStmt.dmConn.Access.Dm_build_814(innerRows, startPos)
 	if err != nil {
-		panic(err)
+		return false
 	}
 
 	innerRows.totalRowCount = execInfo.updateCount
